@@ -1,0 +1,13 @@
+{
+  "version": "0.2.0",
+  "configurations": [
+    {
+      "type": "java",
+      "name": "BudgetingApplication",
+      "request": "launch",
+      "mainClass": "dio.budgeting.BudgetingApplication",
+      "projectName": "budgeting",
+      "envFile": "${workspaceFolder}/.env"
+    }
+  ]
+}

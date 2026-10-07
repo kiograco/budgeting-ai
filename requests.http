@@ -1,0 +1,59 @@
+### Requisições de exemplo (extensão REST Client do VS Code: clique em "Send Request")
+@host = http://localhost:8080
+
+### 1. Criar uma transação (amount em CENTAVOS: 8000 = R$ 80,00)
+POST {{host}}/transactions
+Content-Type: application/json
+
+{
+  "description": "Compras no mercado",
+  "category": "GROCERIES",
+  "amount": 8000
+}
+
+### 2. Listar transações de uma categoria
+GET {{host}}/transactions/GROCERIES
+
+### 3. Resumo de gastos (novo)
+GET {{host}}/transactions/summary
+
+### 4. Validação: valor inválido -> 400
+POST {{host}}/transactions
+Content-Type: application/json
+
+{
+  "description": "Mercado",
+  "category": "GROCERIES",
+  "amount": 0
+}
+
+### 5. Validação: categoria inexistente -> 400
+GET {{host}}/transactions/PADARIA
+
+### 6. Assistente por texto (novo) - registra um gasto via Tool Calling
+POST {{host}}/transactions/ai/text
+Content-Type: application/json
+
+{
+  "message": "Gastei 60 reais no restaurante hoje"
+}
+
+### 7. Assistente por texto (novo) - consulta usando a nova ferramenta de resumo
+POST {{host}}/transactions/ai/text
+Content-Type: application/json
+
+{
+  "message": "Quanto eu gastei no total e em qual categoria gastei mais?"
+}
+
+### 8. Fluxo principal por voz: envia um áudio e recebe a resposta em MP3
+# Dica: no terminal é mais prático usar o curl do README para salvar o MP3.
+POST {{host}}/transactions/ai
+Content-Type: multipart/form-data; boundary=boundary
+
+--boundary
+Content-Disposition: form-data; name="file"; filename="recording-1.m4a"
+Content-Type: audio/mp4
+
+< ./src/test/resources/audio/recording-1.m4a
+--boundary--

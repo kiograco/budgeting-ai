@@ -1,0 +1,22 @@
+services:
+  database:
+    image: mysql:9.6
+    environment:
+      MYSQL_DATABASE: transaction
+      MYSQL_ROOT_PASSWORD: root
+      MYSQL_USER: app
+      MYSQL_PASSWORD: app
+    ports:
+      - "3307:3306"
+    volumes:
+      - transaction_data:/var/lib/mysql
+    healthcheck:
+      # 127.0.0.1 força TCP: o servidor temporário da inicialização só escuta no socket
+      test: [ "CMD", "mysqladmin", "ping", "-h", "127.0.0.1", "-uapp", "-papp" ]
+      interval: 5s
+      timeout: 5s
+      retries: 10
+      start_period: 60s
+
+volumes:
+  transaction_data:
