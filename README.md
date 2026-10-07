@@ -188,13 +188,15 @@ Categorias: `GROCERIES`, `PHARMA`, `AUTO`, `RESTAURANT`, `LEISURE` e `OTHER`.
 
 ## O que aprendi
 
-> ✏️ *Rascunho: personalize com as suas palavras antes de entregar.*
+Comecei esse desafio achando que a parte difícil seria fazer a IA entender o áudio. Não foi. O Whisper resolveu isso em poucas linhas, e o Spring AI se parece muito com o Spring que eu já conhecia: você injeta o `ChatClient` ou o `TranscriptionModel` e usa. Trocar de modelo vira só uma mudança na configuração.
 
-- Como o **Spring AI** abstrai os provedores de IA (`ChatModel`, `ChatClient`, `TranscriptionModel`, `TextToSpeechModel`), o que permite trocar de modelo apenas pela configuração.
-- Como o **Tool Calling** liga a IA a regras de negócio reais: o modelo decide *qual* caso de uso chamar, mas quem executa e valida é o código da aplicação.
-- Por que vale a pena colocar as **validações no domínio**: a mesma regra protege a API REST e as ações da IA.
-- Que o **prompt de sistema** faz parte do código: detalhes como "valores em centavos" mudam o resultado.
-- Como testar uma aplicação com IA **separando o que é determinístico** (domínio, casos de uso, endpoints) do que depende do modelo (testes de integração).
+O que me prendeu de verdade foi o Tool Calling. Ver o modelo decidir sozinho se devia registrar um gasto, listar uma categoria ou montar um resumo foi o momento em que a coisa fez sentido pra mim. E logo veio a lição mais importante: a IA escolhe o que fazer, mas quem manda é o código. Por isso coloquei as validações dentro da própria entidade `Transaction`. Se o modelo se confundir e tentar salvar um gasto de zero reais, quem barra é o domínio, do mesmo jeito que barraria uma requisição comum na API.
+
+Também passei a levar o prompt de sistema a sério. Parece só um texto, mas uma frase explicando que os valores ficam em centavos mudou completamente as respostas. Hoje eu vejo aquele arquivo como parte do código, e não como um detalhe.
+
+Teve um bug que me ensinou bastante: um gasto de 80 reais aparecia como 8000. A IA respondia com toda a confiança do mundo e eu quase deixei passar. Ficou a lição de não me contentar com o "está funcionando" e olhar os dados de perto.
+
+Por último, tirei a lógica da IA de dentro do controller e levei para uma classe só dela, o `BudgetAssistant`. Fiz isso pensando em organização, mas o maior ganho apareceu nos testes: com o assistente mockado, consegui testar domínio, casos de uso e endpoints sem chave da OpenAI e sem banco. E o endpoint de texto nasceu porque eu cansei de gravar áudio toda vez que queria testar uma ferramenta nova.
 
 ## Créditos
 
